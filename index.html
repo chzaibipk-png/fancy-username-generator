@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fancy Username Generator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Comic Sans MS',cursive,sans-serif;background:linear-gradient(to bottom,#fefcea,#f1da36);display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:10px;}
+header{width:100%;background:linear-gradient(to right,#ff6b6b,#f7d794);color:#fff;text-align:center;padding:20px 0;font-size:28px;font-weight:bold;text-shadow:2px 2px #ffde59;border-bottom:4px solid #ffde59;}
+#ad-top,#ad-bottom{width:95%;max-width:480px;height:90px;background:#f3f3f3;border:2px dashed #ccc;margin:15px 0;text-align:center;line-height:90px;font-size:18px;border-radius:10px;color:#555;}
+#inputContainer{display:flex;flex-direction:column;align-items:center;gap:10px;margin:10px 0;}
+input[type="text"]{padding:10px;font-size:18px;width:250px;border-radius:8px;border:2px solid #ffde59;text-align:center;}
+button{padding:10px 15px;font-size:16px;cursor:pointer;border-radius:8px;border:2px solid #ffde59;background:linear-gradient(to bottom,#ffcb05,#ff6b6b);color:#fff;text-shadow:1px 1px #000;transition:0.2s;}
+button:hover{transform:scale(1.05);}
+#results{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:15px;width:95%;max-width:480px;max-height:400px;overflow-y:auto;}
+.resultBox{background:#fff3c1;width:100%;padding:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;border:2px solid #ffde59;position:relative;}
+.resultBox button{padding:5px 8px;font-size:14px;}
+.copiedMsg{position:absolute;right:60px;top:50%;transform:translateY(-50%);font-size:12px;color:green;background:#fff;padding:2px 5px;border-radius:4px;display:none;box-shadow:0 1px 3px rgba(0,0,0,0.3);}
+span.fancyBold{font-weight:bold;}
+span.fancyItalic{font-style:italic;}
+span.fancyUnderline{text-decoration:underline;}
+span.fancySmallCaps{font-variant:small-caps;}
+span.fancyCursive{font-family:"Brush Script MT", cursive;}
+</style>
+</head>
+<body>
+
+<header>Fancy Username Generator</header>
+<div id="ad-top">Ad Placeholder Top Banner</div>
+
+<div id="inputContainer">
+  <input type="text" id="username" placeholder="Enter your name">
+  <button id="generateBtn">Generate 100+ Styles</button>
+</div>
+
+<div id="results"></div>
+
+<div id="ad-bottom">Ad Placeholder Bottom Banner</div>
+
+<script>
+// Fancy text transformations properly styled
+function styleName(name){
+  let styles = [];
+  const fancyFonts = [
+    str => `<span class="fancyBold">${str}</span>`,
+    str => `<span class="fancyItalic">${str}</span>`,
+    str => `<span class="fancyUnderline">${str}</span>`,
+    str => `<span class="fancySmallCaps">${str}</span>`,
+    str => `<span class="fancyCursive">${str}</span>`,
+    str => str.toUpperCase(),
+    str => str.toLowerCase(),
+    str => str[0].toUpperCase()+str.slice(1).toLowerCase(),
+    str => str.split('').join(' '),
+    str => str.split('').join('-'),
+    str => str.split('').reverse().join(''),
+    str => str.replace(/[aeiou]/gi,'*'),
+    str => '★'+str+'★',
+    str => '✿'+str+'✿',
+    str => 'ღ'+str+'ღ',
+    str => '❀'+str+'❀'
+  ];
+  while(styles.length<100){
+    const f = fancyFonts[Math.floor(Math.random()*fancyFonts.length)];
+    styles.push(f(name));
+  }
+  return styles;
+}
+
+// Generate
+function generateStyles(){
+  const username = document.getElementById('username').value.trim();
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = '';
+  if(username==='') return;
+  const styled = styleName(username);
+  styled.forEach(s=>{
+    const box = document.createElement('div');
+    box.classList.add('resultBox');
+    box.innerHTML = `<span>${s}</span> <button>Copy</button> <span class="copiedMsg">Copied!</span>`;
+    resultsDiv.appendChild(box);
+    const btn = box.querySelector('button');
+    const msg = box.querySelector('.copiedMsg');
+    btn.addEventListener('click', ()=>{
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = s;
+      navigator.clipboard.writeText(tempDiv.textContent); // copy text only, no HTML
+      msg.style.display='inline';
+      setTimeout(()=>{msg.style.display='none';},1000);
+    });
+  });
+}
+
+// Button click
+document.getElementById('generateBtn').addEventListener('click', generateStyles);
+
+// Enter key
+document.getElementById('username').addEventListener('keypress', function(e){
+  if(e.key==='Enter'){generateStyles();}
+});
+</script>
+
+</body>
+</html>
